@@ -17,7 +17,7 @@ namespace golos { namespace chain {
     using golos::protocol::asset;
     using golos::protocol::asset_symbol_type;
 
-    using chain_properties = golos::protocol::chain_properties_19;
+    using chain_properties = golos::protocol::chain_properties_21;
 
     /**
      *  All witnesses with at least 1% net positive approval and

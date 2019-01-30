@@ -510,7 +510,7 @@ namespace golos { namespace protocol {
          * and well functioning network. Any time @owner is in the active set of witnesses these
          * properties will be used to control the blockchain configuration.
          */
-        struct chain_properties_18: public chain_properties_17 {
+        struct chain_properties_18 : public chain_properties_17 {
 
             /**
              *  Minimum fee (in GOLOS) payed when create account with delegation
@@ -556,7 +556,7 @@ namespace golos { namespace protocol {
          * Users can invite referrals, and they will pay some percent of rewards to their referrers.
          * Referral can break paying for some fee.
          */
-        struct chain_properties_19: public chain_properties_18 {
+        struct chain_properties_19 : public chain_properties_18 {
 
             /**
              * Maximum percent of referral deductions
@@ -664,6 +664,55 @@ namespace golos { namespace protocol {
             chain_properties_19& operator=(const chain_properties_19&) = default;
         };
 
+        struct chain_properties_20 : public chain_properties_19 {
+
+            void validate() const;
+
+            chain_properties_20& operator=(const chain_properties_17& src) {
+                chain_properties_19::operator=(src);
+                return *this;
+            }
+
+            chain_properties_20& operator=(const chain_properties_18& src) {
+                chain_properties_19::operator=(src);
+                return *this;
+            }
+
+            chain_properties_20& operator=(const chain_properties_19& src) {
+                chain_properties_19::operator=(src);
+                return *this;
+            }
+
+            chain_properties_20& operator=(const chain_properties_20&) = default;
+        };
+
+        struct chain_properties_21 : public chain_properties_20 {
+
+            void validate() const;
+
+            chain_properties_21& operator=(const chain_properties_17& src) {
+                chain_properties_20::operator=(src);
+                return *this;
+            }
+
+            chain_properties_21& operator=(const chain_properties_18& src) {
+                chain_properties_20::operator=(src);
+                return *this;
+            }
+
+            chain_properties_21& operator=(const chain_properties_19& src) {
+                chain_properties_20::operator=(src);
+                return *this;
+            }
+
+            chain_properties_21& operator=(const chain_properties_20& src) {
+                chain_properties_20::operator=(src);
+                return *this;
+            }
+
+            chain_properties_21& operator=(const chain_properties_21&) = default;
+        };
+
         inline chain_properties_17& chain_properties_17::operator=(const chain_properties_18& src) {
             account_creation_fee = src.account_creation_fee;
             maximum_block_size = src.maximum_block_size;
@@ -674,7 +723,9 @@ namespace golos { namespace protocol {
         using versioned_chain_properties = fc::static_variant<
             chain_properties_17,
             chain_properties_18,
-            chain_properties_19
+            chain_properties_19,
+            chain_properties_20,
+            chain_properties_21
         >;
 
         /**
@@ -1365,6 +1416,12 @@ FC_REFLECT_DERIVED(
     (posts_window)(posts_per_window)(comments_window)(comments_per_window)(votes_window)(votes_per_window)(auction_window_size)
     (max_delegated_vesting_interest_rate)(custom_ops_bandwidth_multiplier)(min_curation_percent)(max_curation_percent)
     (curation_reward_curve)(allow_distribute_auction_reward)(allow_return_auction_reward_to_fund))
+FC_REFLECT_DERIVED(
+    (golos::protocol::chain_properties_20), ((golos::protocol::chain_properties_19)),
+    BOOST_PP_SEQ_NIL)
+FC_REFLECT_DERIVED(
+    (golos::protocol::chain_properties_21), ((golos::protocol::chain_properties_20)),
+    BOOST_PP_SEQ_NIL)
 
 FC_REFLECT_TYPENAME((golos::protocol::versioned_chain_properties))
 

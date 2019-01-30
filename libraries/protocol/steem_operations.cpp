@@ -318,6 +318,14 @@ namespace golos { namespace protocol {
             });
         }
 
+        void chain_properties_20::validate() const {
+            chain_properties_19::validate();
+        }
+
+        void chain_properties_21::validate() const {
+            chain_properties_20::validate();
+        }
+
         void witness_update_operation::validate() const {
             GOLOS_CHECK_PARAM_ACCOUNT(owner);
             GOLOS_CHECK_PARAM(url, {

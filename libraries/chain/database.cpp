@@ -1877,7 +1877,7 @@ namespace golos { namespace chain {
                 active.push_back(&get_witness(wso.current_shuffled_witnesses[i]));
             }
 
-            chain_properties_19 median_props;
+            chain_properties_21 median_props;
 
             auto median = active.size() / 2;
 

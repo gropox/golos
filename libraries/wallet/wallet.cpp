@@ -2259,7 +2259,6 @@ fc::ecc::private_key wallet_api::derive_private_key(const std::string& prefix_st
             op.props = p;
             auto hf = my->_remote_database_api->get_hardfork_version();
             chain_properties_19 p19;
-            chain_properties_20 p20;
             chain_properties_21 p21;
             if (hf >= hardfork_version(0, STEEMIT_HARDFORK_0_19) || !!props.max_referral_interest_rate
                     || !!props.max_referral_term_sec || !!props.min_referral_break_fee || !!props.max_referral_break_fee
@@ -2290,12 +2289,8 @@ fc::ecc::private_key wallet_api::derive_private_key(const std::string& prefix_st
                 SET_PROP(p19, allow_return_auction_reward_to_fund);
                 op.props = p19;
             }
-            if (hf >= hardfork_version(0, STEEMIT_HARDFORK_0_20)) {
-                p20 = p19;
-                op.props = p20;
-            }
             if (hf >= hardfork_version(0, STEEMIT_HARDFORK_0_21)) {
-                p21 = p20;
+                p21 = p19;
                 op.props = p21;
             }
 #undef SET_PROP

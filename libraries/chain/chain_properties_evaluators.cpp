@@ -55,11 +55,6 @@ namespace golos { namespace chain {
             _wprops = p;
         }
 
-        result_type operator()(const chain_properties_20& p) const {
-            ASSERT_REQ_HF(STEEMIT_HARDFORK_0_20, "chain_properties_20");
-            _wprops = p;
-        }
-
         result_type operator()(const chain_properties_21& p) const {
             ASSERT_REQ_HF(STEEMIT_HARDFORK_0_21, "chain_properties_21");
             _wprops = p;

@@ -664,49 +664,22 @@ namespace golos { namespace protocol {
             chain_properties_19& operator=(const chain_properties_19&) = default;
         };
 
-        struct chain_properties_20 : public chain_properties_19 {
-
-            void validate() const;
-
-            chain_properties_20& operator=(const chain_properties_17& src) {
-                chain_properties_19::operator=(src);
-                return *this;
-            }
-
-            chain_properties_20& operator=(const chain_properties_18& src) {
-                chain_properties_19::operator=(src);
-                return *this;
-            }
-
-            chain_properties_20& operator=(const chain_properties_19& src) {
-                chain_properties_19::operator=(src);
-                return *this;
-            }
-
-            chain_properties_20& operator=(const chain_properties_20&) = default;
-        };
-
-        struct chain_properties_21 : public chain_properties_20 {
+        struct chain_properties_21 : public chain_properties_19 {
 
             void validate() const;
 
             chain_properties_21& operator=(const chain_properties_17& src) {
-                chain_properties_20::operator=(src);
+                chain_properties_19::operator=(src);
                 return *this;
             }
 
             chain_properties_21& operator=(const chain_properties_18& src) {
-                chain_properties_20::operator=(src);
+                chain_properties_19::operator=(src);
                 return *this;
             }
 
             chain_properties_21& operator=(const chain_properties_19& src) {
-                chain_properties_20::operator=(src);
-                return *this;
-            }
-
-            chain_properties_21& operator=(const chain_properties_20& src) {
-                chain_properties_20::operator=(src);
+                chain_properties_19::operator=(src);
                 return *this;
             }
 
@@ -724,7 +697,6 @@ namespace golos { namespace protocol {
             chain_properties_17,
             chain_properties_18,
             chain_properties_19,
-            chain_properties_20,
             chain_properties_21
         >;
 
@@ -1417,10 +1389,7 @@ FC_REFLECT_DERIVED(
     (max_delegated_vesting_interest_rate)(custom_ops_bandwidth_multiplier)(min_curation_percent)(max_curation_percent)
     (curation_reward_curve)(allow_distribute_auction_reward)(allow_return_auction_reward_to_fund))
 FC_REFLECT_DERIVED(
-    (golos::protocol::chain_properties_20), ((golos::protocol::chain_properties_19)),
-    BOOST_PP_SEQ_NIL)
-FC_REFLECT_DERIVED(
-    (golos::protocol::chain_properties_21), ((golos::protocol::chain_properties_20)),
+    (golos::protocol::chain_properties_21), ((golos::protocol::chain_properties_19)),
     BOOST_PP_SEQ_NIL)
 
 FC_REFLECT_TYPENAME((golos::protocol::versioned_chain_properties))

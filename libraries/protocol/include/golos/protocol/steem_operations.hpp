@@ -666,6 +666,12 @@ namespace golos { namespace protocol {
 
         struct chain_properties_21 : public chain_properties_19 {
 
+            uint16_t worker_from_content_fund_percent = GOLOS_WORKER_FROM_CONTENT_FUND_PERCENT;
+
+            uint16_t worker_from_vesting_fund_percent = GOLOS_WORKER_FROM_VESTING_FUND_PERCENT;
+
+            uint16_t worker_from_witness_fund_percent = GOLOS_WORKER_FROM_WITNESS_FUND_PERCENT;
+
             void validate() const;
 
             chain_properties_21& operator=(const chain_properties_17& src) {
@@ -1390,7 +1396,7 @@ FC_REFLECT_DERIVED(
     (curation_reward_curve)(allow_distribute_auction_reward)(allow_return_auction_reward_to_fund))
 FC_REFLECT_DERIVED(
     (golos::protocol::chain_properties_21), ((golos::protocol::chain_properties_19)),
-    BOOST_PP_SEQ_NIL)
+    (worker_from_content_fund_percent)(worker_from_vesting_fund_percent)(worker_from_witness_fund_percent))
 
 FC_REFLECT_TYPENAME((golos::protocol::versioned_chain_properties))
 

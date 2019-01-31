@@ -69,23 +69,23 @@ namespace golos { namespace chain {
             int64_t inflation_rate = STEEMIT_INFLATION_RATE_START_PERCENT;
             int64_t supply = db_.get_dynamic_global_properties().virtual_supply.amount.value;
 
-            int64_t total_reward = (supply * inflation_rate) / (int64_t(STEEMIT_100_PERCENT) * STEEMIT_BLOCKS_PER_YEAR);
+            auto total_reward = (supply * inflation_rate) / (int64_t(STEEMIT_100_PERCENT) * STEEMIT_BLOCKS_PER_YEAR);
+            auto content_reward = (total_reward * STEEMIT_CONTENT_REWARD_PERCENT) / STEEMIT_100_PERCENT;
+            auto vesting_reward = total_reward * STEEMIT_VESTING_FUND_PERCENT / STEEMIT_100_PERCENT;
+            auto witness_reward = total_reward - content_reward - vesting_reward;
 
-            int64_t content_reward = 0;
-            int64_t vesting_reward = 0;
-            int64_t worker_reward = 0;
             if (db_.has_hardfork(STEEMIT_HARDFORK_0_21__1013)) {
-                content_reward = total_reward * STEEMIT_CONTENT_REWARD_PERCENT_HF21 / STEEMIT_100_PERCENT;
-                vesting_reward = total_reward * STEEMIT_VESTING_FUND_PERCENT_HF21 / STEEMIT_100_PERCENT;
-                worker_reward = total_reward * STEEMIT_WORKER_FUND_PERCENT_HF21 / STEEMIT_100_PERCENT;
-            } else {
-                content_reward = (total_reward * STEEMIT_CONTENT_REWARD_PERCENT) / STEEMIT_100_PERCENT;
-                vesting_reward = total_reward * STEEMIT_VESTING_FUND_PERCENT / STEEMIT_100_PERCENT;
+                auto content_to_worker = content_reward * GOLOS_WORKER_FROM_CONTENT_FUND_PERCENT / STEEMIT_100_PERCENT;
+                content_reward -= content_to_worker;
+
+                auto vesting_to_worker = vesting_reward * GOLOS_WORKER_FROM_VESTING_FUND_PERCENT / STEEMIT_100_PERCENT;
+                vesting_reward -= vesting_to_worker;
+
+                auto witness_to_worker = witness_reward * GOLOS_WORKER_FROM_WITNESS_FUND_PERCENT / STEEMIT_100_PERCENT;
+                witness_reward -= witness_to_worker;
             }
 
-            auto witness_reward = total_reward - content_reward - vesting_reward - worker_reward;
-
-            auto witness_normalize = db_.get_witness_schedule_object().witness_pay_normalization_factor;
+            auto witness_normalize = 25;
             witness_reward = witness_reward * STEEMIT_MAX_WITNESSES / witness_normalize;
 
             vesting_fund_ += asset(vesting_reward, STEEM_SYMBOL);

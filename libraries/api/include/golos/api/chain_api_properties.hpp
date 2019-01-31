@@ -46,6 +46,10 @@ namespace golos { namespace api {
 
         fc::optional<bool> allow_distribute_auction_reward;
         fc::optional<bool> allow_return_auction_reward_to_fund;
+
+        fc::optional<uint16_t> worker_from_content_fund_percent;
+        fc::optional<uint16_t> worker_from_vesting_fund_percent;
+        fc::optional<uint16_t> worker_from_witness_fund_percent;
     };
 
 } } // golos::api
@@ -59,4 +63,5 @@ FC_REFLECT(
     (posts_window)(posts_per_window)(comments_window)(comments_per_window)(votes_window)(votes_per_window)(auction_window_size)
     (max_delegated_vesting_interest_rate)(custom_ops_bandwidth_multiplier)
     (min_curation_percent)(max_curation_percent)(curation_reward_curve)
-    (allow_distribute_auction_reward)(allow_return_auction_reward_to_fund))
+    (allow_distribute_auction_reward)(allow_return_auction_reward_to_fund)
+    (worker_from_content_fund_percent)(worker_from_vesting_fund_percent)(worker_from_witness_fund_percent))

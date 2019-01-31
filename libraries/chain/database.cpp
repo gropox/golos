@@ -1936,6 +1936,9 @@ namespace golos { namespace chain {
             calc_median(&chain_properties_19::curation_reward_curve);
             calc_median(&chain_properties_19::allow_distribute_auction_reward);
             calc_median(&chain_properties_19::allow_return_auction_reward_to_fund);
+            calc_median(&chain_properties_21::worker_from_content_fund_percent);
+            calc_median(&chain_properties_21::worker_from_vesting_fund_percent);
+            calc_median(&chain_properties_21::worker_from_witness_fund_percent);
 
             const auto& dynamic_global_properties = get_dynamic_global_properties();
 
@@ -2605,37 +2608,38 @@ namespace golos { namespace chain {
                 auto new_steem =
                         (props.virtual_supply.amount * current_inflation_rate) /
                         (int64_t(STEEMIT_100_PERCENT) * int64_t(STEEMIT_BLOCKS_PER_YEAR));
-
-                fc::safe<int64_t> content_reward = 0;
-                fc::safe<int64_t> vesting_reward = 0;
-                fc::safe<int64_t> witness_reward = 0;
-                fc::safe<int64_t> worker_reward = 0;
-
-                if (has_hardfork(STEEMIT_HARDFORK_0_21__1013)) {
-                    content_reward =
-                        (new_steem * STEEMIT_CONTENT_REWARD_PERCENT_HF21) /
-                        STEEMIT_100_PERCENT; /// 60.00% to content creator
-                    vesting_reward =
-                        (new_steem * STEEMIT_VESTING_FUND_PERCENT_HF21) /
-                        STEEMIT_100_PERCENT; /// 24.00% to vesting fund
-                    worker_reward =
-                        (new_steem * STEEMIT_WORKER_FUND_PERCENT_HF21) /
-                        STEEMIT_100_PERCENT; /// 10.00% to worker fund
-                    witness_reward = new_steem - content_reward - vesting_reward - worker_reward; /// Remaining 6.00% to witness pay
-                } else {
-                    content_reward =
+                auto content_reward =
                         (new_steem * STEEMIT_CONTENT_REWARD_PERCENT) /
                         STEEMIT_100_PERCENT; /// 66.67% to content creator
-                    vesting_reward =
+                auto vesting_reward =
                         (new_steem * STEEMIT_VESTING_FUND_PERCENT) /
                         STEEMIT_100_PERCENT; /// 26.67% to vesting fund
-                    witness_reward = new_steem - content_reward - vesting_reward; /// Remaining 6.66% to witness pay
+                auto witness_reward = new_steem - content_reward - vesting_reward; /// Remaining 6.66% to witness pay
+
+                fc::safe<int64_t> worker_reward = 0;
+                if (has_hardfork(STEEMIT_HARDFORK_0_21__1013)) {
+                    auto content_to_worker = content_reward * wso.median_props.worker_from_content_fund_percent / STEEMIT_100_PERCENT;
+                    content_reward -= content_to_worker;
+                    worker_reward += content_to_worker;
+
+                    auto vesting_to_worker = vesting_reward * wso.median_props.worker_from_vesting_fund_percent / STEEMIT_100_PERCENT;
+                    vesting_reward -= vesting_to_worker;
+                    worker_reward += vesting_to_worker;
+
+                    auto witness_to_worker = witness_reward * wso.median_props.worker_from_witness_fund_percent / STEEMIT_100_PERCENT;
+                    witness_reward -= witness_to_worker;
+                    worker_reward += witness_to_worker;
                 }
 
                 witness_reward *= STEEMIT_MAX_WITNESSES;
 
                 if (cwit.schedule == witness_object::timeshare) {
+// TODO
+#ifdef STEEMIT_BUILD_TESTNET
+                    witness_reward *= 1;
+#else
                     witness_reward *= wso.timeshare_weight;
+#endif
                 } else if (cwit.schedule == witness_object::miner) {
                     witness_reward *= wso.miner_weight;
                 } else if (cwit.schedule == witness_object::top19) {
@@ -2651,7 +2655,7 @@ namespace golos { namespace chain {
                 if (worker_reward != 0) {
                     new_steem += worker_reward;
 
-                    modify(props, [&](dynamic_global_property_object &p) {
+                    modify(props, [&](dynamic_global_property_object& p) {
                         p.total_worker_fund_steem += asset(worker_reward, STEEM_SYMBOL);
                     });
                 }

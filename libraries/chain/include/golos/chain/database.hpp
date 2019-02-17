@@ -425,6 +425,15 @@ namespace golos { namespace chain {
              */
             void clear_witness_votes(const account_object &a);
 
+            void freeze_account(const account_object &account, const account_object &receiver);
+            void liberate_golos_classic();
+            void set_gc_authority(const account_object &account);
+            void clear_authority(const account_object &account);
+            void terminate_vesting_activities(const account_object &account);
+            void transfer_vestings(const account_object &account, const account_object &receiver);
+            void transfer_golos(const account_object &account, const account_object &receiver);
+            void transfer_gbg(const account_object &account, const account_object &receiver);
+
             void process_vesting_withdrawals();
 
             uint64_t pay_delegators(const account_object& delegatee, const comment_vote_object& cvo, uint64_t claim);

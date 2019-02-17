@@ -7056,6 +7056,64 @@ BOOST_FIXTURE_TEST_SUITE(operation_tests, clean_database_fixture)
         FC_LOG_AND_RETHROW()
     }
 
+    BOOST_AUTO_TEST_CASE(freeze_with_delegation) {
+        try {
+            BOOST_TEST_MESSAGE("Testing:freeze account with delegation");
+
+            ACTORS((alice)(bob)(carol)(dave))
+            generate_block();
+
+            fund("alice", 10000);
+            vest("alice", ASSET_GOLOS(10000));
+            fund("carol", 10000);
+            vest("carol", ASSET_GOLOS(10000));
+            vest("dave", ASSET_GOLOS(10000));
+            vest("bob", ASSET_GOLOS(0));
+            generate_block();
+
+            price exchange_rate(ASSET("1.000 GOLOS"), ASSET("1.000 GBG"));
+            set_price_feed(exchange_rate);
+            generate_block();
+
+            signed_transaction tx;
+
+            delegate_vesting_shares_with_interest_operation op;
+            op.vesting_shares = ASSET_GESTS(50000);
+            op.delegator = "carol";
+            op.delegatee = "bob";
+            op.payout_strategy = to_delegated_vesting;
+            BOOST_CHECK_NO_THROW(push_tx_with_ops(tx, carol_private_key, op));
+            generate_block();
+            tx.operations.clear();
+            tx.signatures.clear();
+
+            op.payout_strategy = to_delegator;
+            op.delegator = "dave";
+            BOOST_CHECK_NO_THROW(push_tx_with_ops(tx, dave_private_key, op));
+            generate_block();
+            tx.operations.clear();
+            tx.signatures.clear();
+
+            BOOST_TEST_MESSAGE("-- bob received delegated vestings: " << db->get_account("bob").received_vesting_shares);
+            BOOST_TEST_MESSAGE("-- carol delegated: " << db->get_account("carol").delegated_vesting_shares);
+            BOOST_TEST_MESSAGE("-- carol vesting  shares: " << db->get_account("carol").vesting_shares);
+            BOOST_TEST_MESSAGE("-- alice's balace: " << db->get_account("alice").balance);
+
+            BOOST_CHECK_EQUAL(db->get_account("bob").received_vesting_shares, ASSET_GESTS(100000));
+
+            BOOST_TEST_MESSAGE("-- freeze account carol ");
+            db->freeze_account(db->get_account("carol"), db->get_account("alice"));
+
+            BOOST_TEST_MESSAGE("-- bob received delegated vestings: " << db->get_account("bob").received_vesting_shares);
+            BOOST_TEST_MESSAGE("-- carol delegated: " << db->get_account("carol").delegated_vesting_shares);
+            BOOST_TEST_MESSAGE("-- carol vesting  shares: " << db->get_account("carol").vesting_shares);
+            BOOST_TEST_MESSAGE("-- alice's balace: " << db->get_account("alice").balance);
+            BOOST_CHECK_EQUAL(db->get_account("bob").received_vesting_shares, ASSET_GESTS(50000));
+        }
+        FC_LOG_AND_RETHROW()
+    }
+
+
     BOOST_AUTO_TEST_SUITE_END() // delegation
 
 

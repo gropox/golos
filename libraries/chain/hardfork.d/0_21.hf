@@ -1,0 +1,125 @@
+#ifndef STEEMIT_HARDFORK_0_21
+#define STEEMIT_HARDFORK_0_21 21
+
+#ifdef STEEMIT_BUILD_TESTNET
+#define STEEMIT_HARDFORK_0_21_TIME  1549828800 // 17 jan 2019 12:00:00 MSK
+#else
+#define STEEMIT_HARDFORK_0_21_TIME  1551441600 // 01 mar 2019 12:00:00 GMT
+#endif
+
+#define STEEMIT_HARDFORK_0_21_AUTHORITY_THRESHOLD (10/3*2+1);
+
+#define STEEMIT_HARDFORK_0_21_VERSION hardfork_version( 0, 21 )
+
+namespace liberation_hardfork {
+
+    struct reward {
+        int64_t amount;
+        std::string beneficiary;
+
+        reward(int64_t a, std::string b)
+                    : amount(a), beneficiary(b) {
+        }
+    };
+
+    inline static const reward get_acc_worker() {
+        static const reward worker = reward(85000'000, "ropox");
+        return worker;
+    }
+
+    inline static const reward get_acc_mm() {
+        static const reward mm = reward(2000000'000, "coinbank");
+        return mm;
+    }
+
+    inline static const reward get_acc_regfund() {
+        static const reward regfund = reward(4000000'000, "gc-regfund");
+        return regfund;
+    }
+
+    inline static const reward get_acc_transit() {
+        static const reward transit = reward(10000000'000, "gc-transit");
+        return transit;
+    }
+
+    inline static const std::string get_acc_referendum() {
+        static const std::string referendum = "gc-referendum";
+        return referendum;
+    }
+
+    inline static const std::set <std::string> &get_founders() {
+        static const std::set <std::string> founders
+                {                    
+                    "ropox",
+                    "romapush",
+                    "blockchained",
+                    "erikkartmen",
+                    "onotole",
+                    "litrbooh",
+                    "ultrastod",
+                    "captain",
+                    "lex",
+                    "dmilash"
+                };
+        return founders;
+    }
+
+    inline static const std::set <std::string> &get_accounts_for_freeze() {
+        static const std::set <std::string> accounts_for_freeze
+                {                    
+                    "bender",
+                    "bizvoice-gp",
+                    "bond",
+                    "creat0r",
+                    "creator",
+                    "cyberanalyticsgp",
+                    "cyberfund",
+                    "founder",
+                    "fractal-gp",
+                    "golos",
+                    "goloschina",
+                    "goloscore",
+                    "golosio",
+                    "hipster",
+                    "insider",
+                    "istfak-gp",
+                    "just-life-gp",
+                    "kristina",
+                    "litvintech",
+                    "marina",
+                    "my-vox-video-gp",
+                    "poesie-gp",
+                    "rblogger-gp",
+                    "recenzent-gp",
+                    "satoshigolos",
+                    "satoshipie",
+                    "speculator",
+                    "steemit",
+                    "vitaly-lvov",
+                    "vox-populi-gp",
+                    "vox.mens-gp",
+                    "vp-actionlife-gp",
+                    "vp-bodyform-gp",
+                    "vp-golos-est-gp",
+                    "vp-golos-tv-gp",
+                    "vp-handmade-gp",
+                    "vp-kulinarclubgp",
+                    "vp-magic-indiagp",
+                    "vp-magik-indiagp",
+                    "vp-mir-kino-gp",
+                    "vp-painting-gp",
+                    "vp-pedsovet-gp",
+                    "vp-pedsovetgp",
+                    "vp-photo.pro-gp",
+                    "vp-webdev-gp",
+                    "vp-zarubezhje-gp",
+                    "vp-zarubezhjegp",
+                    "vpodessa-gp",
+                    "vpwomensnaturegp"
+                };
+
+        return accounts_for_freeze;
+    }
+}
+
+#endif

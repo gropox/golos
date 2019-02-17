@@ -44,7 +44,7 @@ RUN \
         -DENABLE_MONGO_PLUGIN=FALSE \
         .. \
     && \
-    make -j$(nproc) && \
+    make -j$(nproc --ignore 1) && \
     make install && \
     rm -rf /usr/local/src/golos
 
@@ -109,6 +109,8 @@ RUN mkdir /var/cache/golosd && \
 
 ENV HOME /var/lib/golosd
 RUN chown golosd:golosd -R /var/lib/golosd
+
+ADD share/golosd/testnet_snapshot.json /var/lib/golosd/snapshot5392323.json
 
 # rpc service:
 # http

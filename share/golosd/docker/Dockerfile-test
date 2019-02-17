@@ -62,7 +62,7 @@ RUN \
 #        -DMAX_19_VOTED_WITNESSES=TRUE \
 #        -DENABLE_MONGO_PLUGIN=FALSE \
 #        .. && \
-#    make -j$(nproc) chain_test plugin_test && \
+#    make -j$(nproc --ignore 1) chain_test plugin_test && \
 #    ./tests/chain_test && \
 #    ./tests/plugin_test && \
 #    mkdir -p /var/cobertura && \

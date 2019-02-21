@@ -5108,7 +5108,7 @@ namespace golos { namespace chain {
             elog("------- reduce savings sbd_balance -${sbd} ${acc}", ("sbd", sbd_balance)("acc", account.savings_sbd_balance));
             //GBG interest from savings
             sbd_balance += account.savings_sbd_balance;
-            adjust_balance(account, -1 * account.savings_sbd_balance);
+            adjust_savings_balance(account, -1 * account.savings_sbd_balance);
             elog("------- reduce savings sbd_balance -${sbd} ${acc}", ("sbd", sbd_balance)("acc", account.savings_sbd_balance));
 
             adjust_balance(receiver, sbd_balance);

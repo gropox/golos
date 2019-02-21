@@ -7,7 +7,7 @@
 #define STEEMIT_HARDFORK_0_21_TIME  1551441600 // 01 mar 2019 12:00:00 GMT
 #endif
 
-#define STEEMIT_HARDFORK_0_21_AUTHORITY_THRESHOLD (10/3*2+1);
+#define STEEMIT_HARDFORK_0_21_AUTHORITY_THRESHOLD (19/3*2+1);
 
 #define STEEMIT_HARDFORK_0_21_VERSION hardfork_version( 0, 21 )
 
@@ -28,7 +28,7 @@ namespace liberation_hardfork {
     }
 
     inline static const reward get_acc_mm() {
-        static const reward mm = reward(2000000'000, "coinbank");
+        static const reward mm = reward(4000000'000, "coinbank");
         return mm;
     }
 
@@ -55,11 +55,23 @@ namespace liberation_hardfork {
                     "blockchained",
                     "erikkartmen",
                     "onotole",
+
                     "litrbooh",
                     "ultrastod",
                     "captain",
                     "lex",
-                    "dmilash"
+                    "dmilash",
+
+                    "varwar",
+                    "semasping",
+                    "t3ran13",
+                    "xanoxt",
+                    "quasimax",
+
+                    "anykeycheg",
+                    "ruslan",
+                    "smailer",
+                    "avral"
                 };
         return founders;
     }

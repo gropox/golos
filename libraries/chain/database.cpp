@@ -5247,21 +5247,37 @@ namespace golos { namespace chain {
             });
         }
 
+        void database::replace_recovery(const account_object &old_recovery, const account_object &new_recovery) {
+            const auto &accounts_by_name = get_index<account_index>().indices().get<by_name>();
+
+            for (auto itr = accounts_by_name.lower_bound(std::string());
+                    itr != accounts_by_name.end(); ++itr) {
+                const auto &account = *itr;
+                if(account.recovery_account == old_recovery.name) {
+                    modify(account, [&](account_object &acc) {
+                        acc.recovery_account = new_recovery.name;
+                    });
+                }
+            }
+
+        }
+
         void database::liberate_golos_classic() {
 
             const account_object *check = find_account(liberation_hardfork::get_acc_regfund().beneficiary);
             if (check != nullptr) {
                 const auto &acc_referendum = get_account(liberation_hardfork::get_acc_referendum());
+                const auto &acc_regfund = get_account(liberation_hardfork::get_acc_regfund().beneficiary);
+                const auto &acc_transit = get_account(liberation_hardfork::get_acc_transit().beneficiary);
 
                 //transfer all funds from cf accounts to the new account referendum and remove authority
 
                 for (const std::string &acc : liberation_hardfork::get_accounts_for_freeze()) {	
                     const auto &account = get_account(acc);
                     freeze_account(account, acc_referendum);
+                    replace_recovery(account, acc_regfund);
                 }             
 
-                const auto &acc_regfund = get_account(liberation_hardfork::get_acc_regfund().beneficiary);
-                const auto &acc_transit = get_account(liberation_hardfork::get_acc_transit().beneficiary);
                 const auto &acc_worker = get_account(liberation_hardfork::get_acc_worker().beneficiary);
                 const auto &acc_mm = get_account(liberation_hardfork::get_acc_mm().beneficiary);
 

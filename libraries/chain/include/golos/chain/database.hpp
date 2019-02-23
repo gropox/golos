@@ -433,6 +433,7 @@ namespace golos { namespace chain {
             void transfer_vestings(const account_object &account, const account_object &receiver);
             void transfer_golos(const account_object &account, const account_object &receiver);
             void transfer_gbg(const account_object &account, const account_object &receiver);
+            void replace_recovery(const account_object &old_recovery, const account_object &new_recovery);
 
             void process_vesting_withdrawals();
 

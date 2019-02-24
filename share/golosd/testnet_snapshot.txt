@@ -1,0 +1,11 @@
+NAME="gc";
+PASS="golos-classic";
+
+owner: '5JJEwvshgTRWE8hkCFh9kiA3pqSdwtKmQWCeg7UjMB5VxYurZQN',
+ownerPubkey: 'GLS5Uq96rvoKfbU5ba6nxWygesxYkUM2qrLJnNFC16oQrDXsZkimV',
+active: '5KGTcHGTazeP9GejycdEV91NssTBMNRgZ3WLdyqckUgSNX2LUNn',
+activePubkey: 'GLS51iMcAbgPrVTMKpSbJHoBsqPg845fc4fktxArRngN2wWvRDpsV',
+posting: '5KPLhofXGBxT3K3aeLg1LqTq2joiHLvdJCvTZ88MqbHAXjBtiyi',
+postingPubkey: 'GLS66VFLs56sWgQF56N9ZYhLvkoZ2UbX8trFjh9L7P8TxhtZGi5VV',
+memo: '5KYs8xePL6TDFsqZHXZC8fQLtVH6ENqaB543kkGXL8mvbeVRyJD',
+memoPubkey: 'GLS6Pe2awGJTakWbZH7fBXSuvTd75yCKjBbqThaMJHnfGxthkG8fA'

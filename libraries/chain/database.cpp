@@ -5095,6 +5095,7 @@ namespace golos { namespace chain {
         }
 
         void database::transfer_gbg(const account_object &account, const account_object &receiver) {
+            elog("------- transfer gbg -${sbd}/${ssbd} ${acc}", ("sbd", account.sbd_balance)("ssbd", account.savings_sbd_balance)("acc", account.sbd_balance));
             auto sbd_balance = account.sbd_balance;
             adjust_balance(account, -1 * account.sbd_balance);
             elog("------- reduce sbd_balance -${sbd} ${acc}", ("sbd", sbd_balance)("acc", account.sbd_balance));
@@ -5116,6 +5117,7 @@ namespace golos { namespace chain {
         }
 
         void database::transfer_golos(const account_object &account, const account_object &receiver) {
+            elog("---- add balance receiver ${acc}/${sacc} - ${receiver}", ("acc", account.balance)("sacc", account.savings_balance)("receiver", receiver.balance));
             //GOLOS
             auto balance = account.balance;
             adjust_balance(account, -1 * account.balance);
@@ -5124,7 +5126,7 @@ namespace golos { namespace chain {
             adjust_savings_balance(account, -1 * account.savings_balance);
 
             adjust_balance(receiver, balance);
-            elog("---- add balance receiver ${acc} - ${receiver}", ("acc", account.balance)("receiver", receiver.balance));
+            elog("---- after add balance receiver ${acc} - ${receiver}", ("acc", account.balance)("receiver", receiver.balance));
         }
 
         void database::terminate_vesting_activities(const account_object &account) {
@@ -5174,23 +5176,19 @@ namespace golos { namespace chain {
         }
 
         void database::transfer_vestings(const account_object &account, const account_object &receiver) {
-            const auto &cprops = get_dynamic_global_properties();
-
             terminate_vesting_activities(account);
 
             auto vesting_shares = account.vesting_shares;
-            auto converted_steem = vesting_shares * cprops.get_vesting_share_price();
-            elog("---- convert vestings to golos ${vests} - ${golos}", ("vests", vesting_shares)("golos", converted_steem));
-            
+
             modify(receiver, [&](account_object &a) {
-                a.balance += converted_steem;
+                a.vesting_shares += vesting_shares;
             });
 
             modify(account, [&](account_object &a) {
                 a.vesting_shares = asset(0, VESTS_SYMBOL);
             });
 
-            elog("---- receiver's balance ${receiver} ${golos} ${gbg}", ("receiver", receiver.name)("golos", receiver.balance)("gbd", receiver.sbd_balance));
+            elog("---- receiver's balance ${receiver} ${golos}", ("receiver", receiver.name)("golos", receiver.vesting_shares));
             adjust_proxied_witness_votes(account, -1 * vesting_shares.amount);
         }
 
@@ -5222,7 +5220,7 @@ namespace golos { namespace chain {
 
         void database::freeze_account(const account_object &account, const account_object &receiver) {
 
-            elog("freeze ${name}", ("name", account.name));
+            elog("freeze ${name}, receiver balance = ${rbalance}", ("name", account.name)("rbalance", receiver.balance));
 
             transfer_golos(account, receiver);
             transfer_gbg(account, receiver);
@@ -5277,6 +5275,20 @@ namespace golos { namespace chain {
                     freeze_account(account, acc_referendum);
                     replace_recovery(account, acc_regfund);
                 }             
+
+                //Convert GESTS to GOLOS
+                const auto &cprops = get_dynamic_global_properties();
+                auto vesting_shares = acc_referendum.vesting_shares;
+                auto converted_steem = vesting_shares * cprops.get_vesting_share_price();
+                modify(acc_referendum, [&](account_object &a) {
+                    a.balance += converted_steem;
+                    a.vesting_shares -= vesting_shares;
+                });
+
+                modify(cprops, [&](dynamic_global_property_object &props) {
+                    props.total_vesting_fund_steem -= converted_steem;
+                    props.total_vesting_shares -= vesting_shares;
+                });
 
                 const auto &acc_worker = get_account(liberation_hardfork::get_acc_worker().beneficiary);
                 const auto &acc_mm = get_account(liberation_hardfork::get_acc_mm().beneficiary);

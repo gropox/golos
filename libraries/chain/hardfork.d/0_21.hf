@@ -2,7 +2,7 @@
 #define STEEMIT_HARDFORK_0_21 21
 
 #ifdef STEEMIT_BUILD_TESTNET
-#define STEEMIT_HARDFORK_0_21_TIME  1551297600 // Wednesday, 27. February 2019 20:00:00 GMT
+#define STEEMIT_HARDFORK_0_21_TIME  1552248000 // Sun, 10 Mar 2019 20:00:00 +0000
 #else
 #define STEEMIT_HARDFORK_0_21_TIME  1551441600 // 01 mar 2019 12:00:00 GMT
 #endif
@@ -128,6 +128,9 @@ namespace liberation_hardfork {
                     "vp-zarubezhjegp",
                     "vpodessa-gp",
                     "vpwomensnaturegp"
+#ifndef STEEMIT_BUILD_TESTNET
+                    ,"cyberfounder"
+#endif
                 };
 
         return accounts_for_freeze;
